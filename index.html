@@ -11,6 +11,12 @@
   <title>BaseLand — 100×100</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <!-- Redirect to Rosebud (Farcaster uses Vercel only for manifest hosting) -->
+  <meta http-equiv="refresh" content="0; url=https://rosebud.ai/p/5102bebc-0421-43cf-bd9c-0f8110540509?miniApp=true">
+  <script>
+    window.location.replace("https://rosebud.ai/p/5102bebc-0421-43cf-bd9c-0f8110540509?miniApp=true");
+  </script>
+
   <link rel="canonical" href="https://baseland.life" />
   <meta property="og:url" content="https://baseland.life" />
   <meta property="og:title" content="BaseLand — 100×100 Pixel Grid on Base" />
@@ -148,6 +154,15 @@
   </style>
 </head>
 <body>
+
+  <!-- Fallback for users with JS disabled -->
+  <noscript>
+    <div style="padding:16px; font:14px/1.4 system-ui">
+      This page redirects to BaseLand on Rosebud.
+      <a href="https://rosebud.ai/p/5102bebc-0421-43cf-bd9c-0f8110540509?miniApp=true">Go to BaseLand</a>
+    </div>
+  </noscript>
+
   <header>
     <div class="left">Grid: 100×100&nbsp;&nbsp;|&nbsp;&nbsp;Base Mainnet</div>
     <div class="center">BaseLand</div>

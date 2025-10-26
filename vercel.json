@@ -7,11 +7,19 @@
     }
   ],
   "rewrites": [
-    { "source": "/display.json", "destination": "/display.json" }
+    { "source": "/display.json", "destination": "/display.json" },
+    { "source": "/.well-known/farcaster.json", "destination": "/display.json" }
   ],
   "headers": [
     {
       "source": "/display.json",
+      "headers": [
+        { "key": "Content-Type", "value": "application/json; charset=utf-8" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    },
+    {
+      "source": "/.well-known/farcaster.json",
       "headers": [
         { "key": "Content-Type", "value": "application/json; charset=utf-8" },
         { "key": "Access-Control-Allow-Origin", "value": "*" }

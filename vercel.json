@@ -1,7 +1,13 @@
 {
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "https://rosebud.ai/p/5102bebc-0421-43cf-bd9c-0f8110540509?miniApp=true",
+      "permanent": false
+    }
+  ],
   "rewrites": [
-    { "source": "/display.json", "destination": "/display.json" },
-    { "source": "/(.*)", "destination": "/" }
+    { "source": "/display.json", "destination": "/display.json" }
   ],
   "headers": [
     {

@@ -1,0 +1,192 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <script>
+   if (window.location.hostname === "www.baseland.life") {
+     window.location.href = "https://baseland.life" + window.location.pathname;
+   }
+  </script>
+
+  <meta charset="UTF-8" />
+  <title>BaseLand — 100×100</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="canonical" href="https://baseland.life" />
+  <meta property="og:url" content="https://baseland.life" />
+  <meta property="og:title" content="BaseLand — 100×100 Pixel Grid on Base" />
+  <meta property="og:description" content="Mint your pixel on a 100×100 grid. On-chain, fast, and elegant." />
+  <meta property="og:image" content="https://baseland.life/assets/preview.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <meta name="fc:miniapp" content='{"version":"1","imageUrl":"https://baseland.life/assets/preview.png","button":{"title":"Open BaseLand","action":{"type":"launch_miniapp","url":"https://baseland.life","name":"BaseLand"}}}' />
+  <meta name="fc:frame" content='{"version":"1","imageUrl":"https://baseland.life/assets/preview.png","button":{"title":"Open BaseLand","action":{"type":"launch_frame","url":"https://baseland.life","name":"BaseLand"}}}' />
+
+  <script type="importmap">
+  {
+    "imports": {
+      "ethers": "https://esm.sh/ethers@6.9.0"
+    }
+  }
+  </script>
+
+  <style>
+    :root {
+      --blue: #1652F0;
+      --white: #FFFFFF;
+      --black: #111111;
+      --bg: #000000;
+      --panel: #0b0b0b;
+      --panel-2: #141414;
+      --line: #1e1e1e;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin:0; padding:0; height:100%;
+      background: var(--bg); color: var(--white);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+
+    header {
+      position: fixed; top:0; left:0; right:0; height:60px;
+      display:flex; align-items:center; gap:12px; padding:0 16px;
+      background: rgba(10,10,10,0.72); backdrop-filter: blur(8px);
+      border-bottom: 1px solid #181818; z-index:10;
+    }
+    header .left  { flex:1; font-size:14px; opacity:.8 }
+    header .center{ flex:1; text-align:center; font-weight:800; letter-spacing:.6px }
+    header .right { flex:1; display:flex; justify-content:flex-end; align-items:center; gap:8px; }
+
+    button {
+      background: var(--blue); color: var(--white);
+      border:0; padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:700;
+      transition: transform .08s ease, opacity .2s ease, box-shadow .2s ease;
+      box-shadow: 0 8px 20px rgba(22,82,240,.22);
+    }
+    button:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(22,82,240,.32); }
+    button:active { transform: translateY(0); }
+    button[disabled] { opacity:.6; cursor:not-allowed; box-shadow:none }
+
+    #container { position: absolute; top:60px; left:0; right:0; bottom:0; overflow:hidden; }
+    #bg {
+      position: absolute; inset: 0; width:100%; height:100%; display:block;
+      z-index: 0;
+      touch-action: none;
+    }
+    #grid {
+      position: absolute; inset: 0; width:100%; height:100%; display:block;
+      background:
+        radial-gradient(1200px 600px at 50% 40%, rgba(22,82,240,.08), transparent 60%),
+        var(--black);
+      z-index: 1;
+      touch-action: none;
+    }
+
+    #container::before {
+      content: "";
+      position: absolute; inset: 0;
+      background-image: url("https://rosebud.ai/assets/Base_Logo_1.png?cdHW");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: min(70vmin, 720px);
+      opacity: 0.12;
+      pointer-events: none;
+      z-index: -1;
+      filter:
+        hue-rotate(10deg)
+        saturate(1.8)
+        brightness(1.1)
+        drop-shadow(0 0 40px rgba(22, 82, 240, 0.3))
+        drop-shadow(0 0 80px rgba(22, 82, 240, 0.2));
+      mix-blend-mode: screen;
+      image-rendering: pixelated;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: crisp-edges;
+    }
+    
+    #container::after {
+      content: "";
+      position: absolute; inset: 0;
+      background: radial-gradient(
+        ellipse 800px 500px at 50% 45%,
+        rgba(22, 82, 240, 0.15),
+        rgba(22, 82, 240, 0.08) 40%,
+        transparent 70%
+      );
+      pointer-events: none;
+      z-index: -1;
+      mix-blend-mode: screen;
+    }
+
+    #buy-modal {
+      position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+      background: rgba(0,0,0,0.55); backdrop-filter: blur(4px); z-index:20;
+    }
+    .modal-card {
+      width:min(92vw,420px);
+      background: linear-gradient(180deg, #0d0d0d, #0a0a0a);
+      border:1px solid #1a1a1a; border-radius:14px; padding:18px 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.03);
+    }
+    .modal-card h3 { margin:0 0 8px 0; font-size:18px; letter-spacing:.3px }
+    .row { display:flex; justify-content:space-between; margin:10px 0; font-size:14px; opacity:.9 }
+    .actions { display:flex; gap:10px; margin-top:12px }
+    .ghost { background: var(--panel-2); border:1px solid #222; color:#ddd; }
+    .ghost:hover { border-color:#2a2a2a }
+    a.inline { color:var(--white); text-decoration: none; border-bottom:1px dashed #333; }
+
+    #status {
+      position:fixed; bottom:14px; left:50%; transform:translateX(-50%);
+      background: var(--panel); border:1px solid #171717; padding:10px 14px; border-radius:12px;
+      opacity:.95; font-size:13px; z-index:25; box-shadow: 0 10px 30px rgba(0,0,0,.35);
+      transition: opacity .25s ease;
+    }
+
+    .cursor-crosshair { cursor: crosshair; }
+
+    #audio-btn { background:#141414; border:1px solid #222; box-shadow:none; }
+    #bg-audio { display:none; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="left">Grid: 100×100&nbsp;&nbsp;|&nbsp;&nbsp;Base Mainnet</div>
+    <div class="center">BaseLand</div>
+    <div class="right">
+      <button id="audio-btn" class="ghost" title="Ambient audio">🔈</button>
+      <button id="wallet-btn">Connect Wallet</button>
+    </div>
+  </header>
+
+  <div id="container">
+    <canvas id="bg"></canvas>
+    <canvas id="grid"></canvas>
+  </div>
+
+  <div id="buy-modal">
+    <div class="modal-card">
+      <h3>Buy Tile</h3>
+      <div class="row"><span>Coordinate</span><strong id="coord-label">(x,y)</strong></div>
+      <div class="row"><span>Price</span><strong id="price-label">—</strong></div>
+      <div class="actions">
+        <button id="buy-btn">Buy Now</button>
+        <button id="close-modal" class="ghost">Close</button>
+      </div>
+      <div style="margin-top:10px; font-size:12px; opacity:0.7;">
+        Transactions are on <a class="inline" href="https://basescan.org" target="_blank" rel="noopener noreferrer">Base</a>.
+      </div>
+    </div>
+  </div>
+
+  <div id="status"></div>
+
+  <audio
+    id="bg-audio"
+    src="https://rosebud.ai/assets/cosmic-ambience.mp3.mp3?tuDD"
+    preload="auto"
+    loop
+    crossorigin="anonymous">
+  </audio>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

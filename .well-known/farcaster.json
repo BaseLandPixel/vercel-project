@@ -1,4 +1,9 @@
 {
+  "accountAssociation": {
+    "header": "eyJmaWQiOjEzODE3ODUsInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHg1MGQyNzlFNWNDNUEwZDZmQzA5MmMxQjY0YjUxNDg4M2U5NjI0NkJhIn0",
+    "payload": "eyJkb21haW4iOiJiYXNlbGFuZC5saWZlIn0",
+    "signature": "rxeyHbMX2s8Ioc66Ik6zxzjdbDOiXAOncyPGPyM5N4Vk1ACq6bhSHRZYf7m8CbjXLq8Qz8X0jQfFofqXS4wU9hs="
+  },
   "miniapp": {
     "version": "1",
     "name": "BaseLand — 100×100",

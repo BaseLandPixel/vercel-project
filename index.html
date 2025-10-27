@@ -1,11 +1,9 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
-
   <meta charset="UTF-8" />
   <title>BaseLand — 100×100</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
   <link rel="canonical" href="https://baseland.life" />
   <meta property="og:url" content="https://baseland.life" />
   <meta property="og:title" content="BaseLand — 100×100 Pixel Grid on Base" />
@@ -14,27 +12,27 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="fc:frame:manifest" content="https://baseland.life/display.json" />
   <meta name="fc:frame" content='{"version":"1","imageUrl":"https://play.rosebud.ai/assets/frame-1200x800.png?bU1I","button":{"title":"Open BaseLand","action":{"type":"launch_frame","url":"https://baseland.life","name":"BaseLand"}}}' />
-  <script>
-  (function () {
-    try {
-      var u = new URL(location.href);
-      var ref = document.referrer || "";
-      var inMini =
-        u.searchParams.get("miniApp") === "true" ||
-        u.pathname.startsWith("/mini") ||
-        /warpcast|farcaster|miniapp/i.test(ref);
-      if (inMini) document.documentElement.classList.add("miniapp");
-    } catch(e){}
-  })();
-  </script>
   <script type="importmap">
-  {
-    "imports": {
-      "ethers": "https://esm.sh/ethers@6.9.0"
+    {
+      "imports": {
+        "ethers": "https://esm.sh/ethers@6.9.0"
+      }
     }
-  }
   </script>
-
+  <script>
+    (function () {
+      try {
+        var u = new URL(location.href);
+        var ref = document.referrer || "";
+        var inMini =
+          u.searchParams.get("miniApp") === "true" ||
+          u.pathname.startsWith("/mini") ||
+          /warpcast|farcaster|miniapp/i.test(ref) ||
+          (window.self !== window.top);
+        if (inMini) document.documentElement.classList.add("miniapp");
+      } catch (e) {}
+    })();
+  </script>
   <style>
     :root {
       --blue: #1652F0;
@@ -66,7 +64,7 @@
       animation: titleSheen 6s linear infinite;
       text-shadow: 0 0 8px rgba(22,82,240,.25);
     }
-    header .center{ 
+    header .center{
       flex:1; text-align:center; font-weight:800; letter-spacing:.6px;
       font-size:20px;
       background: linear-gradient(90deg, #a9c4ff 0%, #b892ff 40%, #a9c4ff 80%);
@@ -107,12 +105,13 @@
 
     #container { position: absolute; top:60px; left:0; right:0; bottom:0; overflow:hidden; }
     #bg {
-      position: absolute; inset: 0; width:100%; height:100%; display:block;
+      position: absolute; inset: 0; width:100vw; height:calc(var(--vh, 1vh) * 100); display:block;
       z-index: 0;
       touch-action: none;
+      background: #000;
     }
     #grid {
-      position: absolute; inset: 0; width:100%; height:100%; display:block;
+      position: absolute; inset: 0; width:100vw; height:calc(var(--vh, 1vh) * 100); display:block;
       background:
         radial-gradient(1200px 600px at 50% 40%, rgba(22,82,240,.08), transparent 60%),
         var(--black);
@@ -226,11 +225,10 @@
     .loading-state { text-align: center; padding: 40px 20px; opacity: .7; }
     .empty-state { text-align: center; padding: 40px 20px; opacity: .6; }
     .error-state { text-align: center; padding: 40px 20px; color: #ff6b6b; }
+
+    html.miniapp header .left { display: none !important; }
   </style>
   <style id="rosebud-preloader-override">
-    /* Override Rosebud.ai hosting preloader logo with Base logo */
-    
-    /* Hide all default Rosebud logos */
     #rosebud-preloader svg,
     #rosebud-preloader img,
     #rosebud-preloader [class*="logo"],
@@ -252,8 +250,6 @@
       visibility: hidden !important;
       opacity: 0 !important;
     }
-    
-    /* Inject custom Base logo */
     #rosebud-preloader::before,
     .rosebud-loading::before,
     [class*="preloader"]::before,
@@ -275,13 +271,22 @@
       filter: drop-shadow(0 0 20px rgba(22, 82, 240, 0.4)) !important;
       animation: logoGlow 2s ease-in-out infinite !important;
     }
-    
     @keyframes logoGlow {
       0%, 100% { filter: drop-shadow(0 0 20px rgba(22, 82, 240, 0.4)); }
       50% { filter: drop-shadow(0 0 30px rgba(22, 82, 240, 0.6)); }
     }
-    html.miniapp header .left { display: none !important; }
   </style>
+  <script>
+    (function fixIOSVh(){
+      function set() {
+        var vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', vh + 'px');
+      }
+      set();
+      window.addEventListener('resize', set);
+      window.addEventListener('orientationchange', function(){ setTimeout(set, 250); });
+    })();
+  </script>
 </head>
 <body>
   <header>

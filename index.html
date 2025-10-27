@@ -344,23 +344,5 @@
   <audio id="bg-audio" src="https://rosebud.ai/assets/cosmic-ambience.mp3.mp3?tuDD" preload="auto" loop crossorigin="anonymous"></audio>
 
   <script type="module" src="./src/main.js"></script>
-  <script type="module">
-    import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk'
-    const readyOnce = (() => {
-      let sent = false
-      return async () => {
-        if (sent) return
-        sent = true
-        try { await sdk.actions.ready() } catch {}
-      }
-    })()
-    if (document.readyState === 'complete' || document.readyState === 'interactive') {
-      requestAnimationFrame(readyOnce)
-    } else {
-      window.addEventListener('DOMContentLoaded', () => requestAnimationFrame(readyOnce), { once:true })
-    }
-    document.addEventListener('visibilitychange', () => { if (!document.hidden) readyOnce() })
-    setTimeout(readyOnce, 1200)
-  </script>
 </body>
 </html>

@@ -12,6 +12,7 @@
     "requiredCapabilities": [
       "actions.signIn",
       "wallet.getEthereumProvider"
-    ]
+    ],
+    "contractAddress": "0xdD7bEC58d509C5F42DeA2b05684e0bE2e1b3C12a"
   }
 }

@@ -23,6 +23,21 @@
   }
   </script>
 
+  <!-- Early mini-app detection to hide the left "Grid..." label instantly -->
+  <script>
+  (function () {
+    try {
+      var u = new URL(window.location.href);
+      var ref = document.referrer || "";
+      var inMini =
+        u.searchParams.get("miniApp") === "true" ||
+        u.pathname.startsWith("/mini") ||
+        /warpcast|farcaster|miniapp/i.test(ref);
+      if (inMini) document.documentElement.classList.add("miniapp");
+    } catch (e) {}
+  })();
+  </script>
+
   <style>
     :root {
       --blue: #1652F0;

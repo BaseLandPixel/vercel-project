@@ -14,7 +14,19 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="fc:frame:manifest" content="https://baseland.life/display.json" />
   <meta name="fc:frame" content='{"version":"1","imageUrl":"https://play.rosebud.ai/assets/frame-1200x800.png?bU1I","button":{"title":"Open BaseLand","action":{"type":"launch_frame","url":"https://baseland.life","name":"BaseLand"}}}' />
-
+  <script>
+  (function () {
+    try {
+      var u = new URL(location.href);
+      var ref = document.referrer || "";
+      var inMini =
+        u.searchParams.get("miniApp") === "true" ||
+        u.pathname.startsWith("/mini") ||
+        /warpcast|farcaster|miniapp/i.test(ref);
+      if (inMini) document.documentElement.classList.add("miniapp");
+    } catch(e){}
+  })();
+  </script>
   <script type="importmap">
   {
     "imports": {
@@ -268,6 +280,7 @@
       0%, 100% { filter: drop-shadow(0 0 20px rgba(22, 82, 240, 0.4)); }
       50% { filter: drop-shadow(0 0 30px rgba(22, 82, 240, 0.6)); }
     }
+    html.miniapp header .left { display: none !important; }
   </style>
 </head>
 <body>

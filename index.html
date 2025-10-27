@@ -1,31 +1,19 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <script>
-   if (window.location.hostname === "www.baseland.life") {
-     window.location.href = "https://baseland.life" + window.location.pathname;
-   }
-  </script>
 
   <meta charset="UTF-8" />
   <title>BaseLand — 100×100</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- Redirect to Rosebud (Farcaster uses Vercel only for manifest hosting) -->
-  <meta http-equiv="refresh" content="0; url=https://rosebud.ai/p/5102bebc-0421-43cf-bd9c-0f8110540509?miniApp=true">
-  <script>
-    window.location.replace("https://rosebud.ai/p/5102bebc-0421-43cf-bd9c-0f8110540509?miniApp=true");
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
   <link rel="canonical" href="https://baseland.life" />
   <meta property="og:url" content="https://baseland.life" />
   <meta property="og:title" content="BaseLand — 100×100 Pixel Grid on Base" />
   <meta property="og:description" content="Mint your pixel on a 100×100 grid. On-chain, fast, and elegant." />
-  <meta property="og:image" content="https://baseland.life/assets/preview.png" />
+  <meta property="og:image" content="https://play.rosebud.ai/assets/frame-1200x800.png?bU1I" />
   <meta name="twitter:card" content="summary_large_image" />
-
-  <meta name="fc:miniapp" content='{"version":"1","imageUrl":"https://baseland.life/assets/preview.png","button":{"title":"Open BaseLand","action":{"type":"launch_miniapp","url":"https://baseland.life","name":"BaseLand"}}}' />
-  <meta name="fc:frame" content='{"version":"1","imageUrl":"https://baseland.life/assets/preview.png","button":{"title":"Open BaseLand","action":{"type":"launch_frame","url":"https://baseland.life","name":"BaseLand"}}}' />
+  <meta name="fc:frame:manifest" content="https://baseland.life/display.json" />
+  <meta name="fc:frame" content='{"version":"1","imageUrl":"https://play.rosebud.ai/assets/frame-1200x800.png?bU1I","button":{"title":"Open BaseLand","action":{"type":"launch_frame","url":"https://baseland.life","name":"BaseLand"}}}' />
 
   <script type="importmap">
   {
@@ -50,16 +38,48 @@
       margin:0; padding:0; height:100%;
       background: var(--bg); color: var(--white);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
     header {
       position: fixed; top:0; left:0; right:0; height:60px;
       display:flex; align-items:center; gap:12px; padding:0 16px;
       background: rgba(10,10,10,0.72); backdrop-filter: blur(8px);
-      border-bottom: 1px solid #181818; z-index:10;
+      border-bottom: 1px solid #181818; z-index:10000;
     }
-    header .left  { flex:1; font-size:14px; opacity:.8 }
-    header .center{ flex:1; text-align:center; font-weight:800; letter-spacing:.6px }
+    header .left{
+      flex:1; font-size:14px;
+      background: linear-gradient(90deg, #a9c4ff 0%, #b892ff 40%, #a9c4ff 80%);
+      -webkit-background-clip:text; background-clip:text; color: transparent;
+      background-size: 200% 100%;
+      animation: titleSheen 6s linear infinite;
+      text-shadow: 0 0 8px rgba(22,82,240,.25);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    header .center{ 
+      flex:1; text-align:center; font-weight:800; letter-spacing:.6px;
+      font-size:20px;
+      background: linear-gradient(90deg, #a9c4ff 0%, #b892ff 40%, #a9c4ff 80%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      background-size: 200% 100%;
+      text-shadow: 0 0 12px rgba(22,82,240,.35), 0 0 28px rgba(22,82,240,.18);
+      animation: titleSheen 6s linear infinite;
+      transition: transform .15s ease, text-shadow .2s ease;
+      position: relative;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    header .center::after{
+      content:"";
+      display:block; height:2px; width:56%; margin:4px auto 0;
+      background: radial-gradient(ellipse at center, rgba(22,82,240,.7), rgba(22,82,240,0) 65%);
+      filter: blur(.2px);
+      border-radius: 999px;
+    }
+    @keyframes titleSheen {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+
     header .right { flex:1; display:flex; justify-content:flex-end; align-items:center; gap:8px; }
 
     button {
@@ -67,6 +87,7 @@
       border:0; padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:700;
       transition: transform .08s ease, opacity .2s ease, box-shadow .2s ease;
       box-shadow: 0 8px 20px rgba(22,82,240,.22);
+      white-space: nowrap;
     }
     button:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(22,82,240,.32); }
     button:active { transform: translateY(0); }
@@ -90,7 +111,7 @@
     #container::before {
       content: "";
       position: absolute; inset: 0;
-      background-image: url("https://rosebud.ai/assets/Base_Logo_1.png?cdHW");
+      background-image: url("https://rosebud.ai/assets/Base_Logo_1.png?WWz6");
       background-repeat: no-repeat;
       background-position: center;
       background-size: min(70vmin, 720px);
@@ -125,7 +146,7 @@
 
     #buy-modal {
       position:fixed; inset:0; display:none; align-items:center; justify-content:center;
-      background: rgba(0,0,0,0.55); backdrop-filter: blur(4px); z-index:20;
+      background: rgba(0,0,0,0.55); backdrop-filter: blur(4px); z-index:20000;
     }
     .modal-card {
       width:min(92vw,420px);
@@ -143,7 +164,7 @@
     #status {
       position:fixed; bottom:14px; left:50%; transform:translateX(-50%);
       background: var(--panel); border:1px solid #171717; padding:10px 14px; border-radius:12px;
-      opacity:.95; font-size:13px; z-index:25; box-shadow: 0 10px 30px rgba(0,0,0,.35);
+      opacity:.95; font-size:13px; z-index:25000; box-shadow: 0 10px 30px rgba(0,0,0,.35);
       transition: opacity .25s ease;
     }
 
@@ -151,30 +172,137 @@
 
     #audio-btn { background:#141414; border:1px solid #222; box-shadow:none; }
     #bg-audio { display:none; }
+   
+    #wallet-container { position: relative; display: inline-block; }
+    #wallet-dropdown {
+      position: absolute; top: calc(100% + 6px); right: 0; min-width: 180px;
+      background: linear-gradient(180deg, #0d0d0d, #0a0a0a);
+      border: 1px solid #1a1a1a; border-radius: 12px; padding: 6px;
+      box-shadow: 0 12px 32px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.03);
+      z-index: 15000; opacity: 0; pointer-events: none; display:block;
+      transition: opacity .2s ease, transform .2s ease; transform: translateY(-4px);
+    }
+    #wallet-container:hover #wallet-dropdown,
+    #wallet-dropdown:hover { opacity: 1; pointer-events: all; transform: translateY(0); }
+    .dropdown-item {
+      width: 100%; background: transparent; border: 0; color: #fff; padding: 10px 12px;
+      text-align: left; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600;
+      display: flex; align-items: center; gap: 8px; transition: background .15s ease;
+    }
+    .dropdown-item:hover { background: #141414; }
+   
+    .nft-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-top: 12px; }
+    .nft-card {
+      background: #0f0f0f; border: 1px solid #1f1f1f; border-radius: 10px; overflow: hidden;
+      cursor: pointer; transition: all .2s ease;
+    }
+    .nft-card:hover { border-color: var(--blue); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(22,82,240,.15); }
+    .nft-image {
+      width: 100%; aspect-ratio: 1; object-fit: cover; background: #0a0a0a;
+      display: flex; align-items: center; justify-content: center; color: #444; font-size: 32px;
+    }
+    .nft-info { padding: 10px; }
+    .nft-name { font-weight: 700; font-size: 13px; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .nft-collection { font-size: 11px; opacity: .7; margin-bottom: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .nft-meta { display: flex; justify-content: space-between; align-items: center; font-size: 10px; opacity: .6; }
+    .nft-links { display: flex; gap: 6px; margin-top: 8px; }
+    .nft-links a {
+      flex: 1; background: #141414; border: 1px solid #222; border-radius: 6px; padding: 6px;
+      text-align: center; font-size: 11px; color: #ddd; text-decoration: none; transition: all .15s ease;
+    }
+    .nft-links a:hover { border-color: var(--blue); color: var(--blue); }
+    .loading-state { text-align: center; padding: 40px 20px; opacity: .7; }
+    .empty-state { text-align: center; padding: 40px 20px; opacity: .6; }
+    .error-state { text-align: center; padding: 40px 20px; color: #ff6b6b; }
+
+    /* Hide the left "Grid: 100×100 | Base Mainnet" info ONLY inside Farcaster mini app */
+    html.miniapp header .left { display: none !important; }
+  </style>
+  <style id="rosebud-preloader-override">
+    #rosebud-preloader svg,
+    #rosebud-preloader img,
+    #rosebud-preloader [class*="logo"],
+    .rosebud-loading svg,
+    .rosebud-loading img,
+    .rosebud-loading [class*="logo"],
+    [class*="preloader"] svg,
+    [class*="preloader"] img,
+    [class*="preloader"] [class*="logo"],
+    [class*="loading"] svg[class*="logo"],
+    [class*="loading"] img[class*="logo"],
+    [id*="preloader"] svg,
+    [id*="preloader"] img,
+    [id*="loading-screen"] svg,
+    [id*="loading-screen"] img,
+    [data-rosebud-preloader] svg,
+    [data-rosebud-preloader] img {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+    }
+    #rosebud-preloader::before,
+    .rosebud-loading::before,
+    [class*="preloader"]::before,
+    [id*="preloader"]::before,
+    [id*="loading-screen"]::before,
+    [data-rosebud-preloader]::before {
+      content: "" !important;
+      position: absolute !important;
+      left: 50% !important;
+      top: 50% !important;
+      transform: translate(-50%, -50%) !important;
+      width: 120px !important;
+      height: 120px !important;
+      background-image: url("https://rosebud.ai/assets/Base_Logo_1.png?WWz6") !important;
+      background-repeat: no-repeat !important;
+      background-position: center !important;
+      background-size: contain !important;
+      z-index: 999999 !important;
+      filter: drop-shadow(0 0 20px rgba(22, 82, 240, 0.4)) !important;
+      animation: logoGlow 2s ease-in-out infinite !important;
+    }
+    @keyframes logoGlow {
+      0%, 100% { filter: drop-shadow(0 0 20px rgba(22, 82, 240, 0.4)); }
+      50% { filter: drop-shadow(0 0 30px rgba(22, 82, 240, 0.6)); }
+    }
   </style>
 </head>
 <body>
-
-  <!-- Fallback for users with JS disabled -->
-  <noscript>
-    <div style="padding:16px; font:14px/1.4 system-ui">
-      This page redirects to BaseLand on Rosebud.
-      <a href="https://rosebud.ai/p/5102bebc-0421-43cf-bd9c-0f8110540509?miniApp=true">Go to BaseLand</a>
-    </div>
-  </noscript>
-
   <header>
     <div class="left">Grid: 100×100&nbsp;&nbsp;|&nbsp;&nbsp;Base Mainnet</div>
     <div class="center">BaseLand</div>
     <div class="right">
       <button id="audio-btn" class="ghost" title="Ambient audio">🔈</button>
-      <button id="wallet-btn">Connect Wallet</button>
+      <div id="wallet-container" style="position: relative;">
+        <button id="wallet-btn">Connect Wallet</button>
+        <div id="wallet-dropdown">
+          <button id="collections-btn" class="dropdown-item">
+            <span>📦</span> Collections
+          </button>
+        </div>
+      </div>
     </div>
   </header>
 
   <div id="container">
     <canvas id="bg"></canvas>
     <canvas id="grid"></canvas>
+  </div>
+
+  <div id="collections-panel"
+       aria-hidden="true"
+       style="
+         position: fixed; right: 0; top: 0; height: 100vh; width: 380px; max-width: 92vw;
+         background: #0b0b0b; border-left:1px solid #1a1a1a; color:#fff; z-index: 19999;
+         transform: translateX(100%); transition: transform .25s ease;
+         display: flex; flex-direction: column;">
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid #1a1a1a;">
+      <span style="font-weight:700">My NFTs</span>
+      <button id="close-collections" class="ghost" aria-label="Close" style="background:#141414; border:1px solid #222; border-radius:8px; padding:6px 10px;">Close</button>
+    </div>
+    <div id="collections-content" style="overflow:auto; padding:12px;">
+      <div class="loading-state">Loading NFTs…</div>
+    </div>
   </div>
 
   <div id="buy-modal">

@@ -7,11 +7,11 @@
   "miniapp": {
     "version": "1",
     "name": "BaseLand — 100×100",
-    "iconUrl": "https://vercel-project-mu-sooty.vercel.app/baseland-square.png?v=6",
-    "homeUrl": "https://rosebud.ai/p/5102bebc-0421-43cf-bd9c-0f8110540509?miniApp=true",
-    "imageUrl": "https://vercel-project-mu-sooty.vercel.app/baseland-square.png?v=6",
+    "iconUrl": "https://vercel-project-mu-sooty.vercel.app/baseland-square.png?v=7",
+    "homeUrl": "https://baseland.life/?miniApp=true",
+    "imageUrl": "https://vercel-project-mu-sooty.vercel.app/baseland-square.png?v=7",
     "buttonTitle": "Open BaseLand",
-    "splashImageUrl": "https://vercel-project-mu-sooty.vercel.app/baseland-square.png?v=6",
+    "splashImageUrl": "https://vercel-project-mu-sooty.vercel.app/baseland-square.png?v=7",
     "splashBackgroundColor": "#0b0b0b",
     "requiredChains": ["eip155:8453"],
     "requiredCapabilities": [

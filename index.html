@@ -376,5 +376,12 @@
   <audio id="bg-audio" src="https://rosebud.ai/assets/cosmic-ambience.mp3.mp3?tuDD" preload="auto" loop crossorigin="anonymous"></audio>
 
   <script type="module" src="./src/main.js"></script>
+
+  <script type="module">
+    import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk';
+    const miniReady = () => { try { if (sdk?.actions?.ready) sdk.actions.ready(); } catch(e){} };
+    window.addEventListener('DOMContentLoaded', miniReady);
+    setTimeout(miniReady, 0);
+  </script>
 </body>
 </html>

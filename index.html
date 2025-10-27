@@ -240,7 +240,7 @@
     html.miniapp header .left { display: none !important; }
   </style>
 
-  <style id="rosebud-preloader-override">
+   <style id="rosebud-preloader-override">
     #rosebud-preloader svg,
     #rosebud-preloader img,
     #rosebud-preloader [class*="logo"],
@@ -277,6 +277,38 @@
     }
     @keyframes logoGlow { 0%, 100% { filter: drop-shadow(0 0 20px rgba(22, 82, 240, 0.4)); } 50% { filter: drop-shadow(0 0 30px rgba(22, 82, 240, 0.6)); } }
   </style>
+
+  <script>
+  (function () {
+    try {
+      if (document.documentElement.classList.contains('miniapp')) {
+        const s = document.getElementById('rosebud-preloader-override');
+        if (s && s.parentNode) s.parentNode.removeChild(s);
+
+        const kill = document.createElement('style');
+        kill.id = 'kill-miniapp-preloader';
+        kill.textContent = `
+          html.miniapp #rosebud-preloader::before,
+          html.miniapp .rosebud-loading::before,
+          html.miniapp [class*="preloader"]::before,
+          html.miniapp [id*="preloader"]::before,
+          html.miniapp [id*="loading-screen"]::before,
+          html.miniapp [data-rosebud-preloader]::before { content:none !important; display:none !important; }
+
+          html.miniapp #rosebud-preloader,
+          html.miniapp .rosebud-loading,
+          html.miniapp [class*="preloader"],
+          html.miniapp [id*="preloader"],
+          html.miniapp [id*="loading-screen"],
+          html.miniapp [data-rosebud-preloader] { background: transparent !important; }
+
+          html.miniapp #container::before { display: none !important; }
+        `;
+        document.head.appendChild(kill);
+      }
+    } catch (e) {}
+  })();
+  </script>
 
   <script>
     (function fixIOSVh(){

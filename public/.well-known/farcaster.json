@@ -9,10 +9,10 @@
     "name": "BaseLand — 100×100",
     "iconUrl": "https://baseland.life/baseland-icon.png",
     "homeUrl": "https://baseland.life/?miniApp=true",
-    "imageUrl": "https://baseland.life/baseland-splash.png",
+    "imageUrl": "https://baseland.life/baseland-square.png",
     "buttonTitle": "Open BaseLand",
     "splashImageUrl": "https://baseland.life/baseland-splash.png",
-    "splashBackgroundColor": "#0b0b0b",
+    "splashBackgroundColor": "#dee1e7",
     "requiredChains": ["eip155:8453"],
     "requiredCapabilities": ["actions.signIn", "wallet.getEthereumProvider"],
     "contractAddress": "0xdD7bEC58d509C5F42DeA2b05684e0bE2e1b3C12a"

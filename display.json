@@ -2,11 +2,11 @@
   "miniapp": {
     "version": "1",
     "name": "BaseLand — 100×100",
-    "iconUrl": "https://rosebud.ai/assets/Base_Logo_1.png?WWz6",
-    "homeUrl": "https://rosebud.ai/p/5102bebc-0421-43cf-bd9c-0f8110540509",
-    "imageUrl": "https://rosebud.ai/assets/Base_Logo_1.png?WWz6",
+    "iconUrl": "https://baseland.life/baseland-icon.png",
+    "homeUrl": "https://baseland.life/?miniApp=true",
+    "imageUrl": "https://baseland.life/baseland-splash.png",
     "buttonTitle": "Open BaseLand",
-    "splashImageUrl": "https://rosebud.ai/assets/Base_Logo_1.png?WWz6",
+    "splashImageUrl": "https://baseland.life/baseland-splash.png",
     "splashBackgroundColor": "#0b0b0b",
     "requiredChains": ["eip155:8453"],
     "requiredCapabilities": [

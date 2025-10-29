@@ -11,7 +11,7 @@
     "homeUrl": "https://baseland.life/?miniApp=true",
     "imageUrl": "https://baseland.life/baseland-square.png",
     "buttonTitle": "Open BaseLand",
-    "splashImageUrl": "https://baseland.life/baseland-splash.png",
+    "splashImageUrl": "https://baseland.life/baseland-square.png",
     "splashBackgroundColor": "#dee1e7",
     "requiredChains": ["eip155:8453"],
     "requiredCapabilities": ["actions.signIn", "wallet.getEthereumProvider"],

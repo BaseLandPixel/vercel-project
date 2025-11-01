@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BaseLand — 100×100</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Canonical & OG -->
+  <link rel="canonical" href="https://baseland.life" />
+  <meta property="og:url" content="https://baseland.life" />
+  <meta property="og:title" content="BaseLand — 100×100 Pixel Grid on Base" />
+  <meta property="og:description" content="Mint your pixel on a 100×100 grid. On-chain, fast, and elegant." />
+  <meta property="og:image" content="/baseland-hero.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Farcaster frame manifest -->
+  <meta name="fc:frame:manifest" content="/display.json" />
+
+  <!-- Mini-app ortamı tespiti (sadece class ekler) -->
+  <script>
+    (function () {
+      try {
+        var u = new URL(location.href);
+        var ref = document.referrer || "";
+        var inMini =
+          u.searchParams.get("miniApp") === "true" ||
+          u.pathname.startsWith("/mini") ||
+          /warpcast|farcaster|miniapp/i.test(ref) ||
+          (window.self !== window.top);
+        if (inMini) document.documentElement.classList.add("miniapp");
+      } catch (e) {}
+    })();
+  </script>
+
+  <!-- ES module import map (ethers) -->
+  <script async src="https://cdn.jsdelivr.net/npm/es-module-shims@1.10.0/dist/es-module-shims.min.js" crossorigin="anonymous"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "ethers": "https://esm.sh/ethers@6.9.0"
+      }
+    }
+  </script>
+
+  <style>
+    :root{--blue:#1652F0;--white:#FFFFFF;--black:#111111;--bg:#000;--panel:#0b0b0b;--panel-2:#141414;--line:#1e1e1e}
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--white);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    header{position:fixed;top:0;left:0;right:0;height:60px;display:flex;align-items:center;gap:12px;padding:0 16px;background:rgba(10,10,10,.72);backdrop-filter:blur(8px);border-bottom:1px solid #181818;z-index:10}
+    header .left{flex:1;font-size:14px;background:linear-gradient(90deg,#a9c4ff 0%,#b892ff 40%,#a9c4ff 80%);-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% 100%;animation:titleSheen 6s linear infinite;text-shadow:0 0 8px rgba(22,82,240,.25)}
+    header .center{flex:1;text-align:center;font-weight:800;letter-spacing:.6px;font-size:22px;background:linear-gradient(90deg,#a9c4ff 0%,#b892ff 40%,#a9c4ff 80%);-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% 100%;text-shadow:0 0 12px rgba(22,82,240,.35),0 0 28px rgba(22,82,240,.18);animation:titleSheen 6s linear infinite}
+    @keyframes titleSheen{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+    header .right{flex:1;display:flex;justify-content:flex-end;align-items:center;gap:8px}
+    button{background:var(--blue);color:#fff;border:0;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:700;transition:transform .08s ease,opacity .2s ease,box-shadow .2s ease;box-shadow:0 8px 20px rgba(22,82,240,.22)}
+    button:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(22,82,240,.32)}
+    button[disabled]{opacity:.6;cursor:not-allowed;box-shadow:none}
+    #container{position:absolute;top:60px;left:0;right:0;bottom:0;overflow:hidden}
+    #bg,#grid{position:absolute;inset:0;width:100vw;height:calc(var(--vh,1vh)*100);display:block;touch-action:none}
+    #grid{background:radial-gradient(1200px 600px at 50% 40%, rgba(22,82,240,.08), transparent 60%), var(--black)}
+    #status{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:var(--panel);border:1px solid #171717;padding:10px 14px;border-radius:12px;opacity:.95;font-size:13px;z-index:25;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+    .cursor-crosshair{cursor:crosshair}
+    #audio-btn{background:#141414;border:1px solid #222;box-shadow:none}
+    #bg-audio{display:none}
+    html.miniapp header .left{display:none!important}
+  </style>
+
+  <!-- iOS 100vh fix -->
+  <script>
+    (function fixIOSVh(){
+      function set(){var vh=window.innerHeight*0.01;document.documentElement.style.setProperty('--vh',vh+'px')}
+      set();window.addEventListener('resize',set);
+      window.addEventListener('orientationchange',function(){setTimeout(set,250)})
+    })();
+  </script>
+</head>
+<body>
+  <header>
+    <div class="left">Grid: 100×100&nbsp;&nbsp;|&nbsp;&nbsp;Base Mainnet</div>
+    <div class="center">BaseLand</div>
+    <div class="right">
+      <button id="audio-btn" class="ghost" title="Ambient audio">🔈</button>
+      <div id="wallet-container" style="position:relative;">
+        <button id="wallet-btn">Connect Wallet</button>
+        <div id="wallet-dropdown" style="display:none;">
+          <button id="collections-btn" class="dropdown-item"><span>📦</span> Collections</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div id="container">
+    <canvas id="bg"></canvas>
+    <canvas id="grid"></canvas>
+  </div>
+
+  <div id="collections-panel" aria-hidden="true" style="position:fixed;right:0;top:0;height:100vh;width:380px;max-width:92vw;background:#0b0b0b;border-left:1px solid #1a1a1a;color:#fff;z-index:1100;transform:translateX(100%);transition:transform .25s ease;display:flex;flex-direction:column;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #1a1a1a;">
+      <span style="font-weight:700">My NFTs</span>
+      <button id="close-collections" class="ghost" aria-label="Close" style="background:#141414;border:1px solid #222;border-radius:8px;padding:6px 10px;">Close</button>
+    </div>
+    <div id="collections-content" style="overflow:auto;padding:12px;">
+      <div class="loading-state">Loading NFTs…</div>
+    </div>
+  </div>
+
+  <div id="buy-modal" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:20;">
+    <div class="modal-card" style="width:min(92vw,420px);background:linear-gradient(180deg,#0d0d0d,#0a0a0a);border:1px solid #1a1a1a;border-radius:14px;padding:18px 16px;box-shadow:0 20px 60px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.03);">
+      <h3 style="margin:0 0 8px 0;font-size:18px;letter-spacing:.3px">Buy Tile</h3>
+      <div class="row" style="display:flex;justify-content:space-between;margin:10px 0;font-size:14px;opacity:.9"><span>Coordinate</span><strong id="coord-label">(x,y)</strong></div>
+      <div class="row" style="display:flex;justify-content:space-between;margin:10px 0;font-size:14px;opacity:.9"><span>Price</span><strong id="price-label">—</strong></div>
+      <div class="actions" style="display:flex;gap:10px;margin-top:12px">
+        <button id="buy-btn">Buy Now</button>
+        <button id="close-modal" class="ghost" style="background:var(--panel-2);border:1px solid #222;color:#ddd;">Close</button>
+      </div>
+      <div style="margin-top:10px;font-size:12px;opacity:.7">Transactions are on <a href="https://basescan.org" target="_blank" rel="noopener noreferrer" style="color:#fff;text-decoration:none;border-bottom:1px dashed #333">Base</a>.</div>
+    </div>
+  </div>
+
+  <div id="status"></div>
+  <audio id="bg-audio" src="https://rosebud.ai/assets/cosmic-ambience.mp3.mp3?tuDD" preload="auto" loop crossorigin="anonymous"></audio>
+
+  <!-- Ana uygulama -->
+  <script type="module" src="./src/main.js"></script>
+
+  <!-- (İsteğe bağlı) mini-ready sinyali — module üzerinden -->
+  <script type="module">
+    import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk';
+    const miniReady = () => { try { sdk?.actions?.ready?.(); } catch(_){} };
+    window.addEventListener('DOMContentLoaded', miniReady);
+    setTimeout(miniReady, 0);
+  </script>
+</body>
+</html>

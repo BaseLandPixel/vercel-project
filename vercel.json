@@ -1,18 +1,8 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": false,
   "rewrites": [
-    {
-      "source": "/",
-      "has": [{ "type": "query", "key": "miniApp", "value": "true" }],
-      "destination": "/"
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/",
-      "missing": [{ "type": "query", "key": "miniApp", "value": "true" }],
-      "destination": "https://rosebud.ai/p/5102bebc-0421-43cf-bd9c-0f8110540509",
-      "permanent": false
-    }
+    { "source": "/", "destination": "/index.html" }
   ],
   "headers": [
     {

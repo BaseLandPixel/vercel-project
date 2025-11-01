@@ -5,7 +5,6 @@
   <title>BaseLand — 100×100</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Canonical & OG -->
   <link rel="canonical" href="https://baseland.life" />
   <meta property="og:url" content="https://baseland.life" />
   <meta property="og:title" content="BaseLand — 100×100 Pixel Grid on Base" />
@@ -13,10 +12,8 @@
   <meta property="og:image" content="/baseland-hero.png" />
   <meta name="twitter:card" content="summary_large_image" />
 
-  <!-- Farcaster frame manifest -->
   <meta name="fc:frame:manifest" content="/display.json" />
 
-  <!-- Mini-app ortamı tespiti (sadece class ekler) -->
   <script>
     (function () {
       try {
@@ -32,7 +29,6 @@
     })();
   </script>
 
-  <!-- ES module import map (ethers) -->
   <script async src="https://cdn.jsdelivr.net/npm/es-module-shims@1.10.0/dist/es-module-shims.min.js" crossorigin="anonymous"></script>
   <script type="importmap">
     {
@@ -64,7 +60,6 @@
     html.miniapp header .left{display:none!important}
   </style>
 
-  <!-- iOS 100vh fix -->
   <script>
     (function fixIOSVh(){
       function set(){var vh=window.innerHeight*0.01;document.documentElement.style.setProperty('--vh',vh+'px')}
@@ -119,15 +114,42 @@
   <div id="status"></div>
   <audio id="bg-audio" src="https://rosebud.ai/assets/cosmic-ambience.mp3.mp3?tuDD" preload="auto" loop crossorigin="anonymous"></audio>
 
-  <!-- Ana uygulama -->
- <script type="module" src="src/main.js"></script>
+  <!-- App -->
+  <script type="module" src="/src/main.js"></script>
 
-  <!-- (İsteğe bağlı) mini-ready sinyali — module üzerinden -->
-  <script type="module">
-    import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk';
-    const miniReady = () => { try { sdk?.actions?.ready?.(); } catch(_){} };
-    window.addEventListener('DOMContentLoaded', miniReady);
-    setTimeout(miniReady, 0);
+  <!-- Robust Farcaster mini-app READY signal (no external deps) -->
+  <script>
+  (function readySignal(){
+    function callReady() {
+      try {
+        var sdk =
+          (window?.farcaster?.mini && window.farcaster.mini.sdk) ||
+          window?.farcaster?.sdk || window?.miniapp?.sdk || window?.sdk || null;
+
+        if (sdk && sdk.actions && typeof sdk.actions.ready === "function") {
+          try { sdk.actions.ready(); } catch (e) {}
+        }
+      } catch (e) {}
+
+      try {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: "FARCASTER_MINIAPP_READY" }, "*");
+          window.parent.postMessage({ type: "FC_MINIAPP_READY" }, "*");
+          window.parent.postMessage({ type: "warpcast_miniapp_ready" }, "*");
+          window.parent.postMessage({ type: "miniapp_ready" }, "*");
+          window.parent.postMessage("ready", "*");
+        }
+      } catch (e) {}
+    }
+
+    callReady();
+    setTimeout(callReady, 60);
+    setTimeout(callReady, 300);
+    setTimeout(callReady, 1200);
+
+    window.addEventListener("DOMContentLoaded", callReady);
+    window.addEventListener("load", function(){ setTimeout(callReady, 0); });
+  })();
   </script>
 </body>
 </html>

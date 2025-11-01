@@ -13,15 +13,17 @@
   <meta name="fc:frame:manifest" content="https://baseland.life/display.json" />
   <meta name="fc:frame" content='{"version":"1","imageUrl":"https://play.rosebud.ai/assets/frame-1200x800.png?bU1I","button":{"title":"Open BaseLand","action":{"type":"launch_frame","url":"https://baseland.life","name":"BaseLand"}}}' />
 
+  <!-- ESM shims for import map -->
   <script async src="https://cdn.jsdelivr.net/npm/es-module-shims@1.10.0/dist/es-module-shims.min.js" crossorigin="anonymous"></script>
   <script type="importmap">
-    {
-      "imports": {
-        "ethers": "https://esm.sh/ethers@6.9.0"
-      }
+  {
+    "imports": {
+      "ethers": "https://esm.sh/ethers@6.9.0"
     }
+  }
   </script>
 
+  <!-- Mini-app env detect (adds .miniapp class early) -->
   <script>
     (function () {
       try {
@@ -33,15 +35,64 @@
           /warpcast|farcaster|miniapp/i.test(ref) ||
           (window.self !== window.top);
         if (inMini) document.documentElement.classList.add("miniapp");
-      } catch (e) {}
+      } catch {}
     })();
   </script>
 
-  <script src="https://cdn.jsdelivr.net/npm/@farcaster/miniapp-sdk/dist/index.umd.min.js"></script>
+  <!-- Farcaster Mini SDK (UMD) with fallback + early ready pings -->
   <script>
-    try {
-      (window?.farcaster?.mini?.sdk || window?.farcaster?.sdk || window?.sdk)?.actions?.ready();
-    } catch (e) {}
+    (function loadMiniSdkAndReady(){
+      function getMiniSdk(){
+        try {
+          return (window?.farcaster?.mini && window.farcaster.mini.sdk) ||
+                 window?.farcaster?.sdk ||
+                 window?.miniapp?.sdk ||
+                 window?.sdk || null;
+        } catch { return null; }
+      }
+      function signalReady(){
+        try {
+          var s = getMiniSdk();
+          if (s && s.actions && typeof s.actions.ready === "function") {
+            try { var r = s.actions.ready(); if (r && r.then) r.catch(()=>{}); } catch {}
+          }
+        } catch {}
+        try {
+          if (window.parent && window.parent !== window) {
+            window.parent.postMessage({ type: "FARCASTER_MINIAPP_READY" }, "*");
+            window.parent.postMessage({ type: "FC_MINIAPP_READY" }, "*");
+            window.parent.postMessage({ type: "warpcast_miniapp_ready" }, "*");
+            window.parent.postMessage({ type: "miniapp_ready" }, "*");
+            window.parent.postMessage("ready", "*");
+          }
+        } catch {}
+      }
+      // try immediately, then after short delays
+      signalReady();
+      setTimeout(signalReady, 60);
+      setTimeout(signalReady, 300);
+      setTimeout(signalReady, 1200);
+
+      // load UMD sdk if not present
+      if (!getMiniSdk()) {
+        var urls = [
+          "https://cdn.jsdelivr.net/npm/@farcaster/miniapp-sdk/dist/index.umd.min.js",
+          "https://unpkg.com/@farcaster/miniapp-sdk/dist/index.umd.min.js"
+        ];
+        var i = 0;
+        (function tryNext(){
+          if (i >= urls.length) return;
+          var s = document.createElement("script");
+          s.src = urls[i++]; s.async = true;
+          s.onload = signalReady;
+          s.onerror = tryNext;
+          document.head.appendChild(s);
+        })();
+      }
+      // also when DOM is ready
+      window.addEventListener("DOMContentLoaded", signalReady);
+      window.addEventListener("load", function(){ setTimeout(signalReady, 0); });
+    })();
   </script>
 
   <style>
@@ -240,7 +291,8 @@
     html.miniapp header .left { display: none !important; }
   </style>
 
-   <style id="rosebud-preloader-override">
+  <!-- Replace Rosebud preloader in miniapp -->
+  <style id="rosebud-preloader-override">
     #rosebud-preloader svg,
     #rosebud-preloader img,
     #rosebud-preloader [class*="logo"],
@@ -279,37 +331,35 @@
   </style>
 
   <script>
-  (function () {
-    try {
-      if (document.documentElement.classList.contains('miniapp')) {
-        const s = document.getElementById('rosebud-preloader-override');
-        if (s && s.parentNode) s.parentNode.removeChild(s);
-
-        const kill = document.createElement('style');
-        kill.id = 'kill-miniapp-preloader';
-        kill.textContent = `
-          html.miniapp #rosebud-preloader::before,
-          html.miniapp .rosebud-loading::before,
-          html.miniapp [class*="preloader"]::before,
-          html.miniapp [id*="preloader"]::before,
-          html.miniapp [id*="loading-screen"]::before,
-          html.miniapp [data-rosebud-preloader]::before { content:none !important; display:none !important; }
-
-          html.miniapp #rosebud-preloader,
-          html.miniapp .rosebud-loading,
-          html.miniapp [class*="preloader"],
-          html.miniapp [id*="preloader"],
-          html.miniapp [id*="loading-screen"],
-          html.miniapp [data-rosebud-preloader] { background: transparent !important; }
-
-          html.miniapp #container::before { display: none !important; }
-        `;
-        document.head.appendChild(kill);
-      }
-    } catch (e) {}
-  })();
+    (function () {
+      try {
+        if (document.documentElement.classList.contains('miniapp')) {
+          var s = document.getElementById('rosebud-preloader-override');
+          if (s && s.parentNode) s.parentNode.removeChild(s);
+          var kill = document.createElement('style');
+          kill.id = 'kill-miniapp-preloader';
+          kill.textContent = `
+            html.miniapp #rosebud-preloader::before,
+            html.miniapp .rosebud-loading::before,
+            html.miniapp [class*="preloader"]::before,
+            html.miniapp [id*="preloader"]::before,
+            html.miniapp [id*="loading-screen"]::before,
+            html.miniapp [data-rosebud-preloader]::before { content:none !important; display:none !important; }
+            html.miniapp #rosebud-preloader,
+            html.miniapp .rosebud-loading,
+            html.miniapp [class*="preloader"],
+            html.miniapp [id*="preloader"],
+            html.miniapp [id*="loading-screen"],
+            html.miniapp [data-rosebud-preloader] { background: transparent !important; }
+            html.miniapp #container::before { display: none !important; }
+          `;
+          document.head.appendChild(kill);
+        }
+      } catch {}
+    })();
   </script>
 
+  <!-- iOS 100vh fix -->
   <script>
     (function fixIOSVh(){
       function set() {
@@ -375,13 +425,7 @@
 
   <audio id="bg-audio" src="https://rosebud.ai/assets/cosmic-ambience.mp3.mp3?tuDD" preload="auto" loop crossorigin="anonymous"></audio>
 
+  <!-- Main app module (must match repo path) -->
   <script type="module" src="./src/main.js"></script>
-
-  <script type="module">
-    import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk';
-    const miniReady = () => { try { if (sdk?.actions?.ready) sdk.actions.ready(); } catch(e){} };
-    window.addEventListener('DOMContentLoaded', miniReady);
-    setTimeout(miniReady, 0);
-  </script>
 </body>
 </html>

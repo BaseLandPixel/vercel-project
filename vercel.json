@@ -2,7 +2,18 @@
   "redirects": [
     {
       "source": "/",
-      "destination": "https://rosebud.ai/p/5102bebc-0421-43cf-bd9c-0f8110540509?miniApp=true",
+      "has": [
+        { "type": "query", "key": "miniApp", "value": "true" }
+      ],
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "missing": [
+        { "type": "query", "key": "miniApp", "value": "true" }
+      ],
+      "destination": "https://rosebud.ai/p/5102bebc-0421-43cf-bd9c-0f8110540509",
       "permanent": false
     }
   ],

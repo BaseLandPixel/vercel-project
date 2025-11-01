@@ -1,13 +1,14 @@
 {
-  "redirects": [
+  "rewrites": [
     {
       "source": "/",
       "has": [
         { "type": "query", "key": "miniApp", "value": "true" }
       ],
-      "destination": "/",
-      "permanent": false
-    },
+      "destination": "/index.html"
+    }
+  ],
+  "redirects": [
     {
       "source": "/",
       "missing": [
